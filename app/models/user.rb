@@ -15,12 +15,13 @@ class User < ActiveRecord::Base
     # USER CREATION
 
     l_id = Linkedin.find_by(linkedin_id: auth.uid) || Linkedin.create(linkedin_id: auth.uid)
+    user = User.find(1)
     picture = Picture.where(user_id: user.id) || Picture.find_by(linkedin_pic: auth.info.image) || Picture.create(linkedin_pic: auth.info.image)
     # find user & set/update access_token
-    user = current_user || User.find(l_id.user_id)
+    # user = current_user || User.find(l_id.user_id)
     user.linkedin = l_id ; user.access_token = auth.credentials.token ; user.expires_at = auth.credentials.expires_at ; user.picture = picture
     # find/create corresponding contact to user
-    if Contact.find(l_id.contact_id).nil? then user_contact = Contact.create(); user_contact.linkedin = l_id else user_contact = Contact.find(l_id.contact_id) end
+    if l_id.contact_id.nil? then user_contact = Contact.create(); user_contact.linkedin = l_id else user_contact = Contact.find(l_id.contact_id) end
     user_contact.linkedin = l_id ; user_contact.picture = picture
 
     # create/update user's connections:

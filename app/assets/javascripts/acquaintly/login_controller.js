@@ -15,7 +15,7 @@ function UsersCtrl($scope, Session) {"use strict";
     };
 
     $scope.logout = function(user) {
-
+      Session.logout("/")
     };
 
     $scope.register = function(user) {

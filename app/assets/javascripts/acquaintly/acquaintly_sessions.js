@@ -7,21 +7,22 @@ angular.module('sessionService', [])
         }
         var service = {
             login: function(email, password) {
-                return $http.post('/login', {user: {email: email, password: password} })
+                return $http.post('/users/sign_in', {user: {email: email, password: password} })
                     .then(function(response) {
                         service.currentUser = response.data.user;
                         if (service.isAuthenticated()) {
                             //TODO: Send them back to where they came from
                             //$location.path(response.data.redirect);
-                            $location.path('/record');
+                            $location.path('/dashboard');
                         }
                     });
             },
 
             logout: function(redirectTo) {
-                $http.post('/logout').then(function() {
+                $http.post('/users/sign_out').then(function() {
                     service.currentUser = null;
-                    redirect(redirectTo);
+                    // redirect(redirectTo);
+                    $location.path(redirectTo);
                 });
             },
 

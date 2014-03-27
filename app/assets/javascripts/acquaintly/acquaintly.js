@@ -1,4 +1,4 @@
-angular.module('AcquaintlyApp', ['AppController', 'sessionService'])
+angular.module('AcquaintlyApp', ['AppController', 'sessionService', 'ngRoute'])
   .config(['$httpProvider', function($httpProvider){
   $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 
@@ -41,10 +41,14 @@ angular.module('AcquaintlyApp', ['AppController', 'sessionService'])
         templateUrl: '/templates/categorize.html',
         controller: 'AppCtrl'
       }).
-      otherwise({
-        templateUrl: '/templates/login.html',
+      when('/login', {
+        templateUrl: 'templates/login.html',
         controller: 'UsersCtrl'
-      });
+      })
+      // .otherwise({
+      //   templateUrl: '/templates/login.html',
+      //   controller: 'UsersCtrl'
+      // });
   }]);
 
 // login = index
