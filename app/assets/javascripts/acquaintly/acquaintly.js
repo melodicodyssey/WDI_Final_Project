@@ -1,17 +1,37 @@
-var AcquaintlyApp = angular.module('AcquaintlyApp', ['AppRouter', 'AppController']);
+angular.module('AcquaintlyApp', ['AppController', 'sessionService'])
+  .config(['$httpProvider', function($httpProvider){
+  $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 
-var AppRouter = angular.module('AppRouter', ['ngRoute']);
+  var interceptor = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
+      function success(response) {
+          return response
+      };
 
-AppRouter.config(['$routeProvider',
+      function error(response) {
+          if (response.status == 401) {
+              $rootScope.$broadcast('event:unauthorized');
+              $location.path('/users/login');
+              return response;
+          };
+          return $q.reject(response);
+      };
+
+      return function(promise) {
+          return promise.then(success, error);
+      };
+  }];
+  $httpProvider.responseInterceptors.push(interceptor);
+  }])
+  .config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
       when('/', {
         templateUrl: '/templates/login.html',
-        controller: 'LoginCtrl'
+        controller: 'UsersCtrl'
       }).
       when('/signup', {
         templateUrl: '/templates/signup.html',
-        controller: 'LoginCtrl'
+        controller: 'UsersCtrl'
       }).
       when('/dashboard', {
         templateUrl: '/templates/dashboard.html',
@@ -23,7 +43,7 @@ AppRouter.config(['$routeProvider',
       }).
       otherwise({
         templateUrl: '/templates/login.html',
-        controller: 'LoginCtrl'
+        controller: 'UsersCtrl'
       });
   }]);
 

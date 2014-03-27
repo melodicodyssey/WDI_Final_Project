@@ -14,9 +14,6 @@ class User < ActiveRecord::Base
 
     # USER CREATION
 
-    user = nil
-    contact = nil
-
     l_id = Linkedin.find_by(linkedin_id: auth.uid) || Linkedin.create(linkedin_id: auth.uid)
     picture = Picture.where(user_id: user.id) || Picture.find_by(linkedin_pic: auth.info.image) || Picture.create(linkedin_pic: auth.info.image)
     # find user & set/update access_token
